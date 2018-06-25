@@ -1,0 +1,323 @@
+\section{Monday 0604}
+
+\subsection{Keynote: Google assistant or my assistant?}
+
+\paragraph{Background}
+Early conversation systems occurred in 1990s. Nowadays, however, the conversation systems stiil need a long way to go, because they should be multi-domained, and scalable (a lot of data-hungry methods are hard to scale).
+
+\subsubsection{Task-oriented dialogue as a collaborative game}
+A seeker and a provider agents. Human are usually the seeker, but machine could be seeker as well. Seeker has a goal but no access to solution. The provider has solutions but does not know the goal.
+
+\paragraph{Provider} language understanding, state tracking, \{dialogue manager, response generator\} that queries the backend (action provider / knowledge bases).
+\begin{itemize}
+	\item Trained by RL aiming to optimize longer term dialogue reward (Levin et al, IEEE TASLP 2000, Singh et al AAAI 2000)
+	\item Hierarchical RL for multi-domain dialogues (Peng et al, EMNLP 2017)
+	\item Reward estimation (Su et al, ACL 2016)
+\end{itemize}
+
+\paragraph{Seeker} language understanding, dialogue state tracking, \{dialogue manager, response generator\} that interacts with the scenario.
+\begin{itemize}
+	\item usually termed as "user simulators". \item e.g: seq-to-seq models; 
+	\item probabilistic, agenda based \cite{Shah2018Neural}
+\end{itemize}
+
+\paragraph{Crawl: machines talking to machines} \cite{Shah2018Bootstrapping} tries to produce dialogues that make sense to humans. 
+
+
+\subsubsection{Dialogue system components attempts to solve challenges}
+
+\paragraph{Conversational Language Understanding}
+LSTM + attention?
+
+How to Integrate conversation context?
+Context vector, attention over history, time decay attention (Su et al, 2018 NAACL)
+
+Challenge: scaling CLU to new verticals.
+\begin{itemize}
+	\item Zero-shot learning using slot tag and description embeddings as additional input during parsing (Bapna et al, Interspeech 2017)
+	\item Train on target (LeFevre et al, Interspeech 2010)
+	\item Test on source (Jabaian et al, ICASSP 2011)
+	\item Joint learning on source and target (He et al, ICASSP 2013)
+	\item Cross-lingual embeddings (Upadhyay et al, ICASSP 2018)
+\end{itemize}
+
+\paragraph{Referring expression resolution for situated dialogues}
+
+
+\paragraph{Dialogue state tracking}
+Agent's estimate of the user's goal(s) based on the dialogue history. Research on DST has been fostered by the dialogue state tracking challenges:
+\begin{itemize}
+	\item Delexicalised RNNs 
+	\item Neural belief tracker 
+	\item End-to-end memory networks for DST
+	\item Recent pointer networks (Xu and Hu, arXiv 2018)
+	\item Simulated datasets focus on entities that were not previously observed
+	\item (Rastogi et al, IEEE ASRU 2017) Focus only on the relevant set of slot values
+\end{itemize}
+
+Accuracy and scalability are important, but efficiency is important too!
+Hierarchical recurrent neural network  (Gupta et al, INterspeech 2018)
+(Rastogi et al, SigDial 2018) that halved the parameter.
+
+\subsubsection{End-to-end learning}
+\paragraph{e2e dialogue with deep RL}
+\begin{itemize}
+	\item Component-wise training benefits from additional data for each component
+	\item Supervised learning (Li et al ICASSP 2017, Bordes et al ICLR 2017)
+	\item RL (Williams et al ACL 2017, Dhingra ACL 2017)
+	\item Eng-to-end dialogue models with human teaching (poster at NAACL 2018)
+\end{itemize}
+
+\subsubsection{Other interesting topics}
+\begin{itemize}
+	\item Diverse in-domain dialogue data
+	\item scaling to new domains / languages 
+	\item integrating context
+	\item scalable multi-domain state tracking
+	\item learning about users
+	\item Understanding and tracking with complex / compositional representations
+	\item Generating multi-modal content
+	\item Situated, multi-modal dialogues
+	\item Latent understanding
+\end{itemize}
+
+
+\subsection{Morning posters}
+
+\subsubsection{Deconfounded Lexicon induction for interpretable social science \cite{Pryzant2018Deconfounded}}
+\begin{itemize}
+	\item Need to mae social models transparent and interpretable. Formalize as" induce a lexicon that is predictive of a set of target variables yet uncorrelated to a set of confounding variables.
+	
+	Formally, look for L that maximizes informativeness coefficient: 
+	\[\mathcal{I}(L) = \mathbb{E} [Var [\mathbb{E}[]Y|L(T), C  | C]] \]
+	\item So they are monitoring the coefficient, but not optimizing it. The optimization is through an adversarial selector.
+	\item Two deep learning algorithms for this task. 
+\end{itemize}
+
+\takeaway{The induced lexicons reminds me of anchor variables (Halpern et al)}
+
+\subsubsection{Learning to rank Q-A pairs using hierarchical RNN with latent domain clustering}
+\begin{itemize}
+	\item Train hierarchical RNN, then cluster the latent dimensions
+	\item Then incorporate each latent vector by the \emph{similarity} of it and all cluster topic vectors. 
+	\item Interestingly, the latent topic cluster does not agree with the human clustering. I think this is reasonable -- you can't ensure that neural networks learn things exactly in the euclidean space.
+\end{itemize}
+
+\subsubsection{Supervised and Unsupervised transfer learning for question answering \cite{Chung2018Supervised}}
+\begin{itemize}
+	\item Model: memory networks. Use CNN to process the embeddings.
+	\item For the supervised part: fine tune the upper network layers, or the whole networks, even including the embedding networks.
+	\item For the unsupervised part: self-train bootstrapping.
+	\item Dataset: Multiple choice QA.
+\end{itemize}
+\takeaway{This is an example where direct fine-tune transfer learning works. It is understandable that multiple choice QA knowledge are easy to transfer than other tasks like translation or classification.}
+
+\subsubsection{Deep communicating agents for abtractive summarization\cite{Celikyilmaz2018Deep}}
+\begin{itemize}
+	\item Agent model: pointer network (seq2seq) for abstractive summarization.
+	\item One paragraph per agent. Break down the difficult long text reading problem down to multiple agents.
+	\item MLE loss: $L_{MLE} = -\sum_{t} log p(y_t | t_{1..t-1}, d)$. Try to make the predicted next word as close to the next ground truth word as possible.
+	\item Semantic cohesion loss: $L_{sem} = \sum_{q} cos(s_q, s_{q-1})$. This encourages the generated sentences to be coherent with the previous sentence.
+	\item Also contains an RL loss:  $L_{RL} = (r(\tilde{y}) - r(\hat{y})) \sum_t logp(\hat{y}_t | \hat{y}_{1..{(t-1)} , d})$. How are the reward decided? Self-critical approach. It is calculated by comparing the similarity between generated sentence and the ground truth.
+	\item Putting the loss together: $L_{mixed} = \gamma L_{RL} + (1-\gamma) L_{MLE}$
+	\item Evaluate using incremental ROUGE scores, considering the intermediate rewards.
+\end{itemize}
+\takeaway{So in many NLP works the reinforcement learning rewards refer to the one calculated upon reaching the end of a passage. In robotics setting RL loss corresponds to the end of an epoch. Note this difference.}
+
+\subsubsection{Key2Vec \cite{Mahata2018Key2Vec:}} 
+\begin{itemize}
+	\item Procedure: Fasttext-skipgram
+\end{itemize}
+
+\subsubsection{Unsupervised keyphrase extraction with multipartite graphs \cite{Boudin2018Unsupervised}}
+\begin{itemize}
+	\item A multipartite graph: nodes from each group does not connect to each other.
+	\item Adjust the weights of graph edges by some metrics w.r.t the entries.
+\end{itemize}
+
+\subsubsection{Estimating summary quality with pairwise preferences \cite{Zopf2018Estimating}}
+\begin{itemize}
+	\item Set up generated preferences as games: the better sentences are more likely to win the game.
+	\item Compute Bradley-Terry scores: $p(s_x > s_y) = \frac{u(s_x)}{u(s_x) + u(s_y)}$. Now you have a list of preferences.
+	\item Value of a summary (collection of sentences): $v(S) = \sum_{i}^{|S|} w_i u(s_i)$
+	\item Automatically generating preferences (refer to paper for details)
+	\item Using additional automatically generated labels can further improve accuracy.
+\end{itemize}
+
+\subsubsection{Which scores to predict in sentence regression for text summarization?\cite{Zopf2018Which}}
+\begin{itemize}
+	\item Recall is biased towards long sentences.
+	\item Ordering according to prevision leads to better summaries.
+	\item Takeaway: better select sentences according to ROGUE precision in summarization tasks.
+\end{itemize}
+
+\subsection{Generation 3}
+Empire C
+\subsubsection{Interpretable charge predictions for criminal cases}
+\begin{itemize}
+	\item Learning to generate court views from fact descriptions \cite{Ye2018Interpretable}
+	\item Overview: charge prediction. Input: fact description in a criminal case. Output: charge label (e.g. drunk driving, intentional injury, etc.)
+	\item Previous work lack interpretability
+	\item What is court view? A written explanation from judges to interprete the charge, including rationale and charge label (only rationale generation this paper).
+	\item High quality rationale? (1) Should contain relevant details; (2) should be charge-discriminative.
+	\item Model: label-conditional seq2seq model. Bi-LSTM with attention. 
+	\item How is the label-conditional work? The label is predicted using encoder attentions. Then the predicted label is passed as an additional input into every step of the decoder.
+\end{itemize}
+
+
+\subsubsection{Delete, Retrieve, Generate: a simple approach to sentiment and style transfer \cite{Li2018Delete}}
+\begin{itemize}
+	\item Text attribute transfer
+	\item Previous work example: adversarial content saparation: (Shen et al 2017, Fu et al 2018)
+	\item Proposed method: (based on seq2seq)
+	
+	(1) Delete the words most indicative to the sentiment (see paper for details)
+	
+	(2) Retrieve: decide what words to insert into context.
+	
+	(3) Generate: 
+	
+	\item Comparison models: TemplateBased, DeleteOnly, DeleteAndRetrieve
+
+\end{itemize}
+
+
+\subsubsection{Adversarial example generation with syntactically controlled paraphrase networks \cite{Iyyer2018Adversarial}}
+\begin{itemize}
+	\item Adversarial examples generation for images (Goodfellow 2015 ICLR)
+	\item Lexical adversaries (ACL 2018) or syntactic adversary
+	\item Introduce ML approach for syntactic adversary generation
+	\item SCPN: (1) acquire sentential paraphrase pairs through neural backtranslation (using ParaNMT corpus, ACL 2018); The sentences translated back have some syntactic differences. These are uncontrolled paraphrases.
+	
+	Syntactic parse both sentences. 
+	
+	(2) automatically label with Stanford parser.
+	
+	(3) Copy mechanism on encoder (of the LSTM seq2seq model)
+	
+	\item At test time, use only the top two levels of the parsers.
+	
+	\item Evaluation: (1) intrinsic evaluations; (2) adversarial evaluation (sentiment analysis with Stanford Sentiment Treebank).
+	
+	\item Takeaways: (1) SCPN paraphrases does not lose paraphrase quality in comparison to NMT-BT baseline. (2) Adversarial evaluation: 30\% - 40\% broken (about twice as many as NMT-BT)
+	
+	\item How to make the models more robust w.r.t this kind of adversarial attack? Include paraphrased sentences into the training sets of classifier. This can be helpful against adv attack 
+	
+\end{itemize}
+
+\subsection{Sentiment Anaysis 2}
+2pm Empire A
+
+\subsubsection{Sentiment analysis: it's hard\cite{Kenyon-Dean2018Sentiment}}
+\begin{itemize}
+	\item Dataset: MTSA: McGill Twitter Sentiment Analysis (7026 tweets). People disagree with some tweets.
+	\item Don't purge the data (bring in noise), or purge (lose some data)
+	\item Bring in a "complicated" label. 
+	\item Still 7.9\% of tweets do not have agreed labels.
+	\item Is that noisy annotators or data are qualitatively distinct?  -> data that are hard to classifiers are also hard for annotators to label.
+	\item Can we detect "complicated" data? (Not yet)
+	\item Perspective: raw annotations may offer more informative signal for classifiers. 
+\end{itemize}
+
+\takeaway{Before questioning on the classifiers, we should also look at how the data are labeled.\\
+Also this reminds me of Hinton's dark knowledge.}
+
+\subsubsection{Multitask learning of pairwise sequence classification tasks over disparate label spaces\cite{Augenstein2018Multi-Task}}
+\begin{itemize}
+	\item Task: MTL
+	\item Multi-task learning network: shared hidden layers + one output layer per task
+	\item Model 1: label embedding layer. Labels for all tasks are embedded in a separate space. This can enable us to learn the relationships between the labels in the joint embedding space.
+	\item Model 2: label transferring network. Learn to produce pseudo labels for target task.
+	\item Model 3: semi-supervised MTL with LTN.
+\end{itemize}
+
+
+\subsubsection{Human needs categorization of affective events using labeled and unlabeled data\cite{Ding2018Human}}
+\begin{itemize}
+	\item Affective events: why are they positive / negative? Try to explain them with human needs.
+	\item Human needs: physiological, health \& safety, leisure \& aesthetic, finance, social, cognition \& education, freedom \& accessibility, \{ emotions / sentiments, optinions (misc. categories)\}, and other.
+	\item Hypotheses: (1) the polarities of affective events often stem from whether experiencers' human needs are satisfied or violated. (2) most affective events can be explained by a small number of human needs.
+	\item Dataset: annotators had pretty good agreements kappa (pairwise agreeent scores)
+	\item Models: event expression classifier and event context classification.
+	\item Semi-supervised algorithms: 
+	
+	(1) self-training: event expression classifier; iteratively retrain.
+	
+	(2) a expression classifier and context classifier can be set up for a co-training framework.
+\end{itemize}
+
+\subsubsection{Multimodal emoji prediction \cite{Barbieri2018Multimodal}}
+\begin{itemize}
+	\item Emojis are powerful multimodal communication forms.
+	\item Task: given the text and image, predict the emoji included in the text.
+	\item Relevant work: (EACL 2017 "Are emojis predictable?") ("FastText")
+	\item Model: FastText on text, ResNet-101 on image, freeze the layers, train a Logistic Regressor on top of them. Simple model.
+	\item Multimodal dataset: Instagram
+\end{itemize}
+
+
+\subsection{Outstanding paper session}
+Empire
+
+\subsubsection{Deep contextualized word representations {\color{blue}Best paper award}}
+\begin{itemize}
+	\item Language understanding needs context.
+	\item Propose ELMo: EMbeddings from language Models. 
+	\item What is ELMo?
+	
+	Compute contextual vector: $c_k = f(w_k | w_1 ... w_k .. w_n)$
+	
+	$ELMo = \lambda_2 R_2 + \lambda_1 R_1 + \lambda_0 R_0$ where $R_k$ is the $k^{th}$ layer of the LSTM. Specifically k=0 corresponds to the input (word embedding) and k=1, 2, .... are the hidden layers output.
+	
+	\item Properties of ELMo representations: (1) unsupervised; (2) contextual; (3) deep; (4) character-based; (5) versatile.
+	
+	\item 4GPU, 2 weeks to train the model.
+\end{itemize}
+
+
+\subsubsection{Neural text generation in stories using entity representations as context }
+\begin{itemize}
+	\item Can we use entity representations as a form of context to improve text generation for stories?
+	\item Three evaluations: mention generation, (pairwise) sentence selection, human evaluation
+	\item base model: seq2seq with attention. (but it usually does not mention entities in previous sentences)
+	
+	\item Want the mentions also be carried out in a natural way.
+	
+	\item Full model: Each step contains the content generated in current sentence and previous sentence, and the current state of the entities entioned in the docuent so far.
+	
+	\item Dataset: Toronto book corpus: adventure books (containing entity annotations)
+	
+	\item Future directions: deeper entity knowledge: social commensense, modeling inter-entity relationships. Structure in story generation. New domains: news articles, recipes. etc.
+\end{itemize}
+
+\subsubsection{RNNs as weighted language recognizers \cite{Chen2018Recurrent}}
+ \begin{itemize}
+ 	\item Strings and probabilities. RNNs are probabilitstic automatas.
+ 	\item Formal properties of RNNs:
+ 	
+ 	For any turing Machine, can construct an RNN to simulate it. (Siegelmann and Sontag 1995)
+ 	
+ 	No thinking time between action and inputs.
+ 	
+ 	\item Questions about RNN's formal properties: consistency; best string; equivalence; minimization. 
+ 	
+ 	\item Consistency: $\sum_s R(s) = 1$?
+ 	
+ 	Problem of inconsistent PCFG.
+ 	
+ 	However, PCFG trained from EM are consistent
+
+ 	
+ 	Consistent or inconsistent RNN. Empirically as SGD training proceeds, RNNs become more consistent
+ 	
+ 	\item Highest=weighted string?
+ 	
+ 	Highest-weighted string under lenght bound is NP-complete.
+ 	
+ 	\item Equivalence? No. 
+ 	
+ 	\item Minimization? Undecidable.
+ 	
+ \end{itemize}
+
+\takeaway{1. Quite surprising to see such a formal (theoretical) analysis on RNN in NAACL (instead of COLT). \\ 2. The first author did this during a summer internship. She entered university in the same year (2014) as me. What am I doing orz...}

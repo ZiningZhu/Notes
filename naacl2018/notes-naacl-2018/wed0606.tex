@@ -1,0 +1,32 @@
+\section{Wednesday 0606}
+
+\subsection{Morphology: why do we need it? } (Graham Neubig)
+
+\subsubsection{Neural factor-graph models for cross-lingual morphological tagging}
+\begin{itemize}
+	\item What is morphology? To tag the PoS, definite, pronoun type, gender, number, etc.
+	\item Low-resource tagging: hard to use neural models.
+	
+	Cross-lingual transfer etc. can help.
+	
+	\item Baseline model: tag-set prediction (Cotterell+2017). Char-level bi-LSTM + word-level bidirectional LSTM on top.
+	
+	\item Problem: no way to capture the \TODO{?}
+	
+	\item Proposed model: facorial CRF + variable potentials from BiLSTM. The BiLSTM predicts label scores for all tags. 
+	
+	\item Advantages: (1) Generate arbitrary sequence of graphs; (2) \TODO{?}
+	
+	\item Model Factorization: neural, pairwise, transition
+	
+	\item Inference: loopy belief propagation. (dynamic programming)
+	
+	\item To predict tags: 
+	
+	\item Experiments: CRF transition / pairwise parameters should be initialized to 0 for stability.
+\end{itemize}
+
+\paragraph{Desiderata for morphology}
+\begin{itemize}
+	\item Explicitly capture orphological variation. e.g: different forms of the same word; consistency within phrases; elegantly predict probabilities for unknown words. 
+\end{itemize}

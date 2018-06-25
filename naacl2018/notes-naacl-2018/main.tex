@@ -1,0 +1,47 @@
+\documentclass[english]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{color}
+\usepackage{mdframed}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{graphicx}
+\usepackage{natbib}
+\usepackage[hidelinks]{hyperref}
+\setlength{\headheight}{20pt} 
+
+\definecolor{lightyellow}{RGB}{250,250,245}
+\newcommand{\takeaway}[1]{
+\begin{mdframed}[backgroundcolor=lightyellow] 
+\textbf{Takeaway} #1 
+\end{mdframed}}
+
+\newcommand{\TODO}[1]{{\color{red} TODO - #1}}
+
+\begin{document}
+
+\title{Notes on NAACL 2018}
+
+\author{Zining Zhu \footnote{Winterlight Labs + University of Toronto, \url{http://ziningzhu.me/2018/06/05/NAACL2018}, \texttt{zining.zhu@mail.utoronto.ca} }}
+\date{New Orleans, Louisiana, June 5, 2018}
+
+\maketitle
+
+\vspace{1cm}
+
+\tableofcontents
+
+\input{fri0601}
+\input{sat0602}
+\input{sun0603}
+\input{mon0604}
+%\input{tue0605}
+%
+\input{wed0606}
+\input{thoughts}
+
+\bibliographystyle{plain}
+\bibliography{naacl2018}
+
+\end{document}
